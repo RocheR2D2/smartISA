@@ -13,7 +13,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-         <Auth />
+         <Root />
     </ApolloProvider>,
     document.getElementById("root")
 );

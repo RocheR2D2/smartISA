@@ -20,7 +20,6 @@ const GET_DOCX_QUERY = gql`
         id
         title
         description
-        url
     }
 }`;
 
