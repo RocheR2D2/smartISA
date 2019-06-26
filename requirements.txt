@@ -1,0 +1,10 @@
+django>=2.0
+psycopg2
+Scrapy
+Celery
+Pypandoc
+Spacy
+graphene-django
+django-graphql-jwt
+django-cors-headers
+pillow 
