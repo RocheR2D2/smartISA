@@ -16,7 +16,7 @@ const Root = () => (
 )
 const GET_DOCX_QUERY = gql`
 {
-    tracks {
+    docxs {
         id
         title
         description
