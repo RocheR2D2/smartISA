@@ -6,8 +6,8 @@ import {gql} from 'apollo-boost';
 import App from "./pages/App";
 import Profile from "./pages/Profile";
 import Header from './components/Shared/Header';
-import Loading from "./components/Shared/Loading";
-import Error from "./components/Shared/Error";
+//import Loading from "./components/Shared/Loading";
+//import Error from "./components/Shared/Error";
 
 
 const Root = () => (
