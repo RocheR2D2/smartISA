@@ -1,5 +1,5 @@
 1. BackEnd: Django
-*  - smart: main Directory, define url, all configurations & installed applications are found in settings.py 
+*     - smart: main Directory, define url, all configurations & installed applications are found in settings.py 
 *     - case: application
 *         - models.py: define the data model of our keywords with their explication fields
 *         - schema.py: define the schema for graphql Query
