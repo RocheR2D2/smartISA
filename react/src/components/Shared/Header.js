@@ -5,40 +5,43 @@ import withStyles from "@material-ui/core/styles/withStyles";
 //import ListItemText from '@material-ui/core/ListItemText';
 //import TypoGraphy from '@material-ui/core/Typography';
 //import ListItemIcon from '@material-ui/core/ListItemIcon';
-//import { Home, Book, AccountBox } from '@material-ui/icons';
+import { Home, AccountBox } from '@material-ui/icons';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import FaceIcon from "@material-ui/icons/FaceTwoTone";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import Signout from "../Auth/Signout";
 
-const Header = ({ classes,  currentUser }) => {
+const Header = ({ classes, currentUser }) => {
   return (
     <AppBar position="static" className={classes.root}>
-    <Toolbar>
-      {/* Title / Logo */}
-      <Link to="/" className={classes.grow}>
-        <Typography variant="h6" noWrap className={classes.faceIcon}>
-          SmartISA
-        </Typography>
-      </Link>
+      <Toolbar>
 
-      {/* Auth User Info */}
-      {currentUser && (
-        <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
-          <FaceIcon className={classes.faceIcon} />
-          <Typography variant="h6" className={classes.username} noWrap>
-            {currentUser.username}
+         {/* Auth User Info */}
+         {currentUser && (
+          <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
+            <AccountBox className={classes.accountIcon} />
+            <Typography variant="h6" className={classes.username} noWrap>
+              Welcome back, {currentUser.username}
+            </Typography>
+          </Link>
+        )}
+
+        {/* Title / Logo */}
+        <Link to="/" className={classes.grow}>
+          <Home className={classes.accountIcon} />
+          <Typography variant="subtitle1" noWrap className={classes.accountIcon}>
+            SmartISA
           </Typography>
         </Link>
-      )}
 
-      {/* Signout Button */}
-      <Signout />
-    </Toolbar>
-  </AppBar>
-  )
+       
+
+        {/* Signout Button */}
+        <Signout />
+      </Toolbar>
+    </AppBar>
+  );
 };
 
 const styles = theme => ({
@@ -57,7 +60,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     fontSize: 45
   },
-  faceIcon: {
+  accountIcon: {
     marginRight: theme.spacing.unit,
     fontSize: 30,
     color: "white"
