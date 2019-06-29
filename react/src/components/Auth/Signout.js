@@ -37,7 +37,6 @@ const styles = {
     marginLeft: "5px",    
   },
   accountIcon: {
-    marginRight: theme.spacing.unit,
     fontSize: 30,
     color: "white"
   }

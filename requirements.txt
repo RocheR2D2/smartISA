@@ -7,4 +7,4 @@ Spacy
 graphene-django
 django-graphql-jwt
 django-cors-headers
-pillow 
+pillow

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Docx
+from .models import DocxFile
 # Register your models here.
 
-admin.site.register(Docx)
+admin.site.register(DocxFile)

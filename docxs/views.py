@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Docx
-
+from .models import DocxFile
+ 
 
 # Create your views here.
 def readDocx(file):

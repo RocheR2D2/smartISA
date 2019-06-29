@@ -3,7 +3,7 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 #from django.db.models import Q
 
-from .models import Docx
+from .models import DocxFile as Docx
 
 class DocxType(DjangoObjectType):
     class Meta:
