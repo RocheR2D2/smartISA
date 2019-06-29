@@ -5,39 +5,43 @@ from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+from scrapy import Spider 
+from scrapy.crawler import CrawlerProcess
 
 logging.getLogger().setLevel(logging.INFO)
 
 BASE_URL = 'http://www.example.com/'
 
-
-def chrome_example():
-    display = Display(visible=0, size=(800, 600))
-    display.start()
-    logging.info('Initialized virtual display..')
-
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--no-sandbox')
-
-    chrome_options.add_experimental_option('prefs', {
-        'download.default_directory': os.getcwd(),
-        'download.prompt_for_download': False,
-    })
-    logging.info('Prepared chrome options..')
-
-    browser = webdriver.Chrome(chrome_options=chrome_options)
-    logging.info('Initialized chrome browser..')
-
-    browser.get(BASE_URL)
-    logging.info('Accessed %s ..', BASE_URL)
-
-    logging.info('Page title: %s', browser.title)
-
-    browser.quit()
-    display.stop()
+# -*- coding: utf-8 -*-
+import scrapy
 
 
-def firefox_example(url, research):
+class QuotesSpider(Spider):
+    name = "titles"
+    allowed_domains = ["investmentpolicyhub.unctad.org"]
+
+    def parse(self, response):
+  
+        short_title = response.xpath('//*[@id="case-short-title"]/text()').extract_first()
+        full_title = response.xpath('//*[@id="case-full-title"]/text()').extract_first()
+        arbitrail_rules = response.xpath('//*[@id="rules-institution-content"]/div[1]/div/text()').extract_first()
+        decisions_rendered = response.xpath('//*[@id="decisions-content"]//div[last()]/a/text()').extract_first()
+
+        yield{
+        	'short_title': short_title,
+        	'full_title': full_title,
+        	'arbitrail_rules': arbitrail_rules,
+        	'decisions_rendered': decisions_rendered}
+
+def crawl_research(research):
+    """use Selenium to interact with autocomplete search of investmentpolicy.
+
+    research:
+        Name of affair to search can be partial due to autocomplete on website side
+
+    Returns:
+        List of url to crawl, empty list if nothing found
+    """
     display = Display(visible=0, size=(800, 600))
     display.start()
     logging.info('Initialized virtual display..')
@@ -53,26 +57,33 @@ def firefox_example(url, research):
     browser = webdriver.Firefox(firefox_profile=firefox_profile)
     logging.info('Initialized firefox browser..')
 
-    browser.get(url)
+    browser.get("https://investmentpolicy.unctad.org/investment-dispute-settlement/")
     search_bar = browser.find_element_by_id("searchByCaseName")
     search_bar.click() 
     search_bar.send_keys(research)
-    time.sleep(5)
+    time.sleep(1)
     autocomplete_list = browser.find_element_by_id("ui-id-1")
     logging.info(autocomplete_list)
-    items = autocomplete_list.find_elements_by_tag_name("li")
+    items = autocomplete_list.find_elements(By.TAG_NAME,"li")
+    logging.info(items)
+    list_url_to_crawl = []
+    logging.debug(f"Noting found {len(items)} result for {research}")
     for item in items:
-        text = item.text
-        logging.info(text)
         item.click
-        logging.info(text)
-        time.sleep(5)
+        # need some time to load result
+        time.sleep(3)
         correct_link = browser.find_element(By.XPATH,"/html/body/main/section[1]/div/div/div[2]/div/div/div[2]/div[3]/div[1]/div/table/tbody/tr/td[2]/a")
-        logging.info(correct_link.get_attribute('href'))
-
+        logging.info(correct_link.text)
+        list_url_to_crawl.append(str(correct_link.get_attribute('href')))
     browser.quit()
     display.stop()
+    return list_url_to_crawl
 
 if __name__ == '__main__':
-    #chrome_example()
-    firefox_example("https://investmentpolicy.unctad.org/investment-dispute-settlement/","bulgaria")
+    list_result = crawl_research("bulgaria")
+    if list_result:
+        process = CrawlerProcess()
+        process.crawl(QuotesSpider, start_urls=list_result)
+        process.start()
+    else:
+        logging.debug("Nothing to crawl")
