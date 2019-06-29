@@ -7,5 +7,5 @@ from . import views
 
 urlpatterns = [
     #path('', views.index, name='index')
-    path('readdocx/', views.getText, name='getText')
+    path('orgEnts/', views.get_org_ents, name='get_org_ents')
 ]

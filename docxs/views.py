@@ -2,45 +2,54 @@ from django.shortcuts import render
 from django.http import HttpResponse 
 from .models import DocxFile
 from docx import Document
+import spacy
 from spacy.tokens import Span
 import json
 from django.http import JsonResponse
 
-
+nlp = spacy.load('en_core_web_sm')
 
 # Create your views here.
-def getText(requst):
+def getText(request):
     
 
     doc = Document("static/Smart_ISA_01.docx")
     fullText = []
     for para in doc.paragraphs:
         fullText.append(para.text)
-    text = '\n'.join(fullText)
+    doc = '\n'.join(fullText)
     #return HttpResponse(json.dump(text), content_type='application/json')
-    return JsonResponse({'text':text})
+    #return JsonResponse({'text':doc})
+    return doc
 
 # Display basic entity info:
-def show_ents(doc):
+def show_ents(request):
+    
+    doc = nlp(getText(request))
+    fullText = {}
+    i=0
     if doc.ents:
         for ent in doc.ents:
-            print(ent.text+' - '+ent.label_+' - '+str(spacy.explain(ent.label_)))
-    else:
-        print('No named entities found.')
+            fullText[i] = ent.text+' - '+ent.label_+' - '+str(spacy.explain(ent.label_))
+            i += 1
+    return JsonResponse({'fulltext':fullText})
 
 # Get a dictonary filled of org ents from the word doc without duplicate value
-def get_org_ents(doc):
+def get_org_ents(request):
+    doc = nlp(getText(request))
     org_ents = {}
     i=0
     if doc.ents:
         for ent in doc.ents:
             if ent.label_ == 'ORG' and ent.text.replace("\n", "") not in str(org_ents.values()).replace("\n",""):
             #if ent.label_ == 'ORG' and not ent.text.isspace():
-                org_ents[i] = ent
+                # org_ents[i] = ent !!!!!!!!!!!!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  NON SÉRIALISABLE PAR JSONRESPONSE
+                org_ents[i] = ent.text
                 i += 1
             #[e for e in doc.ents if not e.text.isspace()]
             #print(ent.text+' - '+ent.label_+' - '+str(spacy.explain(ent.label_)))
-    return org_ents 
+    #return org_ents 
+    return JsonResponse({'org_ents':org_ents})
 
 def addORGSpan(doc):
 	ORG = doc.vocab.strings[u'ORG']  
