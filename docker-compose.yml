@@ -56,6 +56,11 @@ services:
       command: npm start
       restart: always
 
+    crawling:
+      container_name: crawling
+      build: ./crawling
+      command: python crawl.py
+      restart: always
 
 volumes:
     postgres_data:
