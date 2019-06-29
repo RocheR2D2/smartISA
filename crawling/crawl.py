@@ -3,6 +3,8 @@ import logging
 
 from pyvirtualdisplay import Display
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -35,7 +37,7 @@ def chrome_example():
     display.stop()
 
 
-def firefox_example():
+def firefox_example(url, research):
     display = Display(visible=0, size=(800, 600))
     display.start()
     logging.info('Initialized virtual display..')
@@ -51,35 +53,26 @@ def firefox_example():
     browser = webdriver.Firefox(firefox_profile=firefox_profile)
     logging.info('Initialized firefox browser..')
 
-    browser.get(BASE_URL)
-    logging.info('Accessed %s ..', BASE_URL)
-
-    logging.info('Page title: %s', browser.title)
-
-    browser.quit()
-    display.stop()
-
-
-def phantomjs_example(url, research):
-    display = Display(visible=0, size=(800, 600))
-    display.start()
-    logging.info('Initialized virtual display..')
-
-    browser = webdriver.PhantomJS()
-    logging.info('Initialized phantomjs browser..')
-
-    browser.get(BASE_URL)
-    logging.info('Accessed %s ..', BASE_URL)
-
-    logging.info('Page title: %s', browser.title)
+    browser.get(url)
+    search_bar = browser.find_element_by_id("searchByCaseName")
+    search_bar.click() 
+    search_bar.send_keys(research)
+    time.sleep(5)
+    autocomplete_list = browser.find_element_by_id("ui-id-1")
+    logging.info(autocomplete_list)
+    items = autocomplete_list.find_elements_by_tag_name("li")
+    for item in items:
+        text = item.text
+        logging.info(text)
+        item.click
+        logging.info(text)
+        time.sleep(5)
+        correct_link = browser.find_element(By.XPATH,"/html/body/main/section[1]/div/div/div[2]/div/div/div[2]/div[3]/div[1]/div/table/tbody/tr/td[2]/a")
+        logging.info(correct_link.get_attribute('href'))
 
     browser.quit()
     display.stop()
-
-
-
 
 if __name__ == '__main__':
     #chrome_example()
-    #firefox_example()
-    phantomjs_example("https://investmentpolicy.unctad.org/investment-dispute-settlement/",)
+    firefox_example("https://investmentpolicy.unctad.org/investment-dispute-settlement/","bulgaria")
