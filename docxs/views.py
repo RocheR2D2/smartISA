@@ -4,19 +4,21 @@ from .models import DocxFile
 from docx import Document
 from spacy.tokens import Span
 import json
-
+from django.http import JsonResponse
 
 
 
 # Create your views here.
-def getText(filename):
-    filename= ""
-    doc = Document(filename)
+def getText(requst):
+    
+
+    doc = Document("static/Smart_ISA_01.docx")
     fullText = []
     for para in doc.paragraphs:
         fullText.append(para.text)
     text = '\n'.join(fullText)
-    return HttpResponse(json.dump(text), content_type= 'application/json')
+    #return HttpResponse(json.dump(text), content_type='application/json')
+    return JsonResponse({'text':text})
 
 # Display basic entity info:
 def show_ents(doc):
