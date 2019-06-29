@@ -19,3 +19,6 @@
 
 *     reference link:  https://www.jianshu.com/p/e9bc8b819075
 *     link traslated : https://translate.google.com/translate?hl=fr&sl=auto&tl=fr&u=https%3A%2F%2Fwww.jianshu.com%2Fp%2Fe9bc8b819075
+
+* #spacy model
+*  docker-compose exec web python3 -m spacy download en_core_web_sm
