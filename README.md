@@ -1,13 +1,14 @@
 1. BackEnd: Django
-        *  - smart: main Directory, define url, all configurations & installed applications are found in settings.py 
-        *     - case: application
-        *         - models.py: define the data model of our keywords with their explication fields
-        *         - schema.py: define the schema for graphql Query
-        *     - docxs: application
-        *         - models.py: define the data model of docx file ( history of uploaded docx file by registered member)
-        *         - schema.py: define the schema for graphql Query
-        *     - users: aplliocation
-        *         - schema.py: define the schema for graphql Query
+2. *  - smart: main Directory, define url, all configurations & installed applications are found in settings.py 
+2. *     - case: application
+2. *         - models.py: define the data model of our keywords with their explication fields
+2. *         - schema.py: define the schema for graphql Query
+2. *     - docxs: application
+2. *         - models.py: define the data model of docx file ( history of uploaded docx file by registered member)
+2. *         - schema.py: define the schema for graphql Query
+2. *     - users: aplliocation
+2. *         - schema.py: define the schema for graphql Query
+
 
 1. FrontEnd: React
 1. Query: GraphQL
