@@ -8,8 +8,8 @@ import time
 from scrapy import Spider 
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-#from scrapy.settings import Settings
-#import .settings as my_settings
+from scrapy.settings import Settings
+import scrapy_crawler.settings as my_settings
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -63,17 +63,21 @@ def crawl_research(research):
 
 def crawling_site(research):
     list_result = crawl_research(research)
+    task_status = "Failed"
     if list_result:
-        #crawler_settings = Settings()
-        #crawler_settings.setmodule(my_settings)
-        #process = CrawlerProcess(settings=crawler_settings)
-        process = CrawlerProcess(get_project_settings())
-        process.crawl('quotes', domain="investmentpolicy.unctad.org", start_urls=list_result)
-        process.start()
-        #/.scrapy
+        try:
+            crawler_settings = Settings()
+            crawler_settings.setmodule(my_settings)
+            process = CrawlerProcess(settings=crawler_settings)
+            #process = CrawlerProcess(get_project_settings())
+            process.crawl('quotes', domain="investmentpolicy.unctad.org", start_urls=list_result)
+            process.start()
+            task_status="Done"
+        except Exception as e:
+            logging.exception(e)
     else:
         logging.debug(f"Nothing to crawl for {research}")
-    return "lol"
+    return task_status
 
 if __name__ == '__main__':
     crawling_site("bulgaria")

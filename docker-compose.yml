@@ -18,7 +18,7 @@ services:
     # ------> app ------>
     web:
       build: .
-      command: python manage.py runserver 0.0.0.0:8000
+      command: python3 manage.py runserver 0.0.0.0:8000
       restart: always
       volumes:
         - .:/app
@@ -28,6 +28,7 @@ services:
         # (HOST:CONTAINER)
       depends_on:
         - db
+        - scrapyd
     # <------ app <------
     # ------> adminer ------>
     adminer:
@@ -39,6 +40,8 @@ services:
         ADMINER_DESIGN: pepa-linha
       ports:
         - 8080:8080
+      depends_on:
+        - db
     # <------ adminer <------
     reactapollo:
       container_name: reactapollo
@@ -55,12 +58,21 @@ services:
         # (HOST:CONTAINER)
       command: npm start
       restart: always
+      depends_on:
+        - web
 
-    crawling:
-      container_name: crawling
+    scrapyd:
+      container_name: scrapyd
       build: .
-      command: python3 /app/crawler/crawl.py
+      command: scrapyd
+      working_dir: /app/crawler
       restart: always
+      ports:
+        - "6800:6800"
+      volumes:
+        - .:/app 
+      depends_on:
+        - db
 
 volumes:
     postgres_data:

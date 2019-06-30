@@ -6,8 +6,10 @@ djangorestframework
 docx
 python-docx
 graphene-django
-psycopg2
+psycopg2-binary
 Scrapy
+scrapyd
+python-scrapyd-api
 selenium
 Spacy
 pillow

@@ -28,4 +28,5 @@ WORKDIR /app
 ADD requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 RUN python3 -m spacy download en_core_web_sm
-ADD . /app/
+RUN echo "bind_address=0.0.0.0" > ~/scrapyd.conf
+ENV PYTHONPATH /app/crawler:$PYTHONPATH
