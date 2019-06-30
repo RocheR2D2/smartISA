@@ -58,8 +58,8 @@ services:
 
     crawling:
       container_name: crawling
-      build: ./crawling
-      command: python3 crawl.py
+      build: .
+      command: python3 /app/crawling/crawl.py
       restart: always
 
 volumes:
