@@ -2,6 +2,8 @@ Celery
 django>=2.0
 django-graphql-jwt
 django-cors-headers
+docx
+python-docx
 graphene-django
 psycopg2
 Scrapy

@@ -27,4 +27,5 @@ RUN mkdir /app
 WORKDIR /app
 ADD requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN python3 -m spacy download en_core_web_sm
 ADD . /app/
