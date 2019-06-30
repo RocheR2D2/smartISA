@@ -7,31 +7,11 @@ from selenium.webdriver.common.by import By
 import time
 from scrapy import Spider 
 from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
+#from scrapy.settings import Settings
+#import .settings as my_settings
 
 logging.getLogger().setLevel(logging.INFO)
-
-BASE_URL = 'http://www.example.com/'
-
-# -*- coding: utf-8 -*-
-import scrapy
-
-
-class QuotesSpider(Spider):
-    name = "titles"
-    allowed_domains = ["investmentpolicyhub.unctad.org"]
-
-    def parse(self, response):
-  
-        short_title = response.xpath('//*[@id="case-short-title"]/text()').extract_first()
-        full_title = response.xpath('//*[@id="case-full-title"]/text()').extract_first()
-        arbitrail_rules = response.xpath('//*[@id="rules-institution-content"]/div[1]/div/text()').extract_first()
-        decisions_rendered = response.xpath('//*[@id="decisions-content"]//div[last()]/a/text()').extract_first()
-
-        yield{
-        	'short_title': short_title,
-        	'full_title': full_title,
-        	'arbitrail_rules': arbitrail_rules,
-        	'decisions_rendered': decisions_rendered}
 
 def crawl_research(research):
     """use Selenium to interact with autocomplete search of investmentpolicy.
@@ -84,11 +64,16 @@ def crawl_research(research):
 def crawling_site(research):
     list_result = crawl_research(research)
     if list_result:
-        process = CrawlerProcess()
-        process.crawl(QuotesSpider, start_urls=list_result)
+        #crawler_settings = Settings()
+        #crawler_settings.setmodule(my_settings)
+        #process = CrawlerProcess(settings=crawler_settings)
+        process = CrawlerProcess(get_project_settings())
+        process.crawl('quotes', domain="investmentpolicy.unctad.org", start_urls=list_result)
         process.start()
+        #/.scrapy
     else:
         logging.debug(f"Nothing to crawl for {research}")
+    return "lol"
 
 if __name__ == '__main__':
     crawling_site("bulgaria")

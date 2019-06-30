@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'docxs',
     'case',
     'graphene_django',
-    'corsheaders'
+    'corsheaders',
 ]
 
 GRAPHENE = {
