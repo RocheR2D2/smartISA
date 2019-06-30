@@ -1,60 +1,152 @@
-import React from "react";
-import withStyles from "@material-ui/core/styles/withStyles";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import Typography from "@material-ui/core/Typography";
+import React, { Component } from "react";
+import Dropzone from "./Dropzone";
+import Progress from "./Progress";
+import "./Upload.css";
 
-const Upload = ({ classes }) => {
-    return (
-        <div className={classes.root}>
-            <ExpansionPanel>
-                <ExpansionPanelSummary>this is a title</ExpansionPanelSummary>
-                <ExpansionPanelDetails className={classes.details}>
-                <Typography>line 1</Typography>
-                <Typography>line 2</Typography>
-                <Typography>line 3</Typography>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
+class Upload extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      files: [],
+      uploading: false,
+      uploadProgress: {},
+      successfullUploaded: false
+    };
+
+    this.onFilesAdded = this.onFilesAdded.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
+    this.sendRequest = this.sendRequest.bind(this);
+    this.renderActions = this.renderActions.bind(this);
+  }
+
+  onFilesAdded(files) {
+    this.setState(prevState => ({
+      files: prevState.files.concat(files)
+    }));
+  }
+
+  async uploadFiles() {
+    this.setState({ uploadProgress: {}, uploading: true });
+    const promises = [];
+    this.state.files.forEach(file => {
+      promises.push(this.sendRequest(file));
+    });
+    try {
+      await Promise.all(promises);
+
+      this.setState({ successfullUploaded: true, uploading: false });
+    } catch (e) {
+      // Not Production ready! Do some error handling here instead...
+      this.setState({ successfullUploaded: true, uploading: false });
+    }
+  }
+
+  sendRequest(file) {
+    return new Promise((resolve, reject) => {
+      const req = new XMLHttpRequest();
+
+      req.upload.addEventListener("progress", event => {
+        if (event.lengthComputable) {
+          const copy = { ...this.state.uploadProgress };
+          copy[file.name] = {
+            state: "pending",
+            percentage: (event.loaded / event.total) * 100
+          };
+          this.setState({ uploadProgress: copy });
+        }
+      });
+
+      req.upload.addEventListener("load", event => {
+        const copy = { ...this.state.uploadProgress };
+        copy[file.name] = { state: "done", percentage: 100 };
+        this.setState({ uploadProgress: copy });
+        resolve(req.response);
+      });
+
+      req.upload.addEventListener("error", event => {
+        const copy = { ...this.state.uploadProgress };
+        copy[file.name] = { state: "error", percentage: 0 };
+        this.setState({ uploadProgress: copy });
+        reject(req.response);
+      });
+
+      const formData = new FormData();
+      formData.append("file", file, file.name);
+      // HERE PUT endpoint django
+      req.open("POST", "http://web:8001/upload");
+      req.send(formData);
+    });
+  }
+
+  renderProgress(file) {
+    const uploadProgress = this.state.uploadProgress[file.name];
+    if (this.state.uploading || this.state.successfullUploaded) {
+      return (
+        <div className="ProgressWrapper">
+          <Progress progress={uploadProgress ? uploadProgress.percentage : 0} />
+          <img
+            className="CheckIcon"
+            alt="done"
+            src="baseline-check_circle_outline-24px.svg"
+            style={{
+              opacity:
+                uploadProgress && uploadProgress.state === "done" ? 0.5 : 0
+            }}
+          />
         </div>
+      );
+    }
+  }
+
+  renderActions() {
+    if (this.state.successfullUploaded) {
+      return (
+        <button
+          onClick={() =>
+            this.setState({ files: [], successfullUploaded: false })
+          }
+        >
+          Clear
+        </button>
+      );
+    } else {
+      return (
+        <button
+          disabled={this.state.files.length < 0 || this.state.uploading}
+          onClick={this.uploadFiles}
+        >
+          Upload
+        </button>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div className="Upload">
+        <span className="Title">Upload Files</span>
+        <div className="Content">
+          <div>
+            <Dropzone
+              onFilesAdded={this.onFilesAdded}
+              disabled={this.state.uploading || this.state.successfullUploaded}
+            />
+          </div>
+          <div className="Files">
+            {this.state.files.map(file => {
+              return (
+                <div key={file.name} className="Row">
+                  <span className="Filename">{file.name}</span>
+                  {this.renderProgress(file)}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="Actions">{this.renderActions()}</div>
+      </div>
     );
-  };
-
-
-
-const styles = theme => ({
-container: {
-    display: "flex",
-    flexWrap: "wrap"
-},
-dialog: {
-    margin: "0 auto",
-    maxWidth: 550
-},
-textField: {
-    margin: theme.spacing.unit
-},
-cancel: {
-    color: "red"
-},
-save: {
-    color: "green"
-},
-button: {
-    margin: theme.spacing.unit * 2
-},
-icon: {
-    marginLeft: theme.spacing.unit
-},
-input: {
-    display: "none"
-},
-fab: {
-    position: "fixed",
-    bottom: theme.spacing.unit * 2,
-    right: theme.spacing.unit * 2,
-    zIndex: "200"
+  }
 }
-});
 
-export default withStyles(styles)(Upload);
+export default Upload;

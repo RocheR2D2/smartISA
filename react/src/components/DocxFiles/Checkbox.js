@@ -4,7 +4,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 
 const Checkbox = ({ classes }) => {
     return <div>Checkbox</div>;
-  };
+};
 
 
 
