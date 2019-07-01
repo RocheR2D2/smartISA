@@ -1,27 +1,32 @@
-import React from "react";
-import withStyles from "@material-ui/core/styles/withStyles";
-
+import React, { Component } from "react";
 
 import Checkbox from '../components/DocxFiles/Checkbox'
-import Findresult from '../components/DocxFiles/Findresult'
-import Timeline from '../components/DocxFiles/Timeline'
 import Upload from '../components/DocxFiles/Upload'
 
-const App = ({ classes }) => {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chkArr: [
+	//{ label: '梨', checked: false },
+      ],
+      checkedLabel: ''
+    };
+  }
+  render() {
   return (
-    <div className = {classes.container}>
+    <div style={divStyles}>
       <Upload />
-      <Timeline />
+      <Checkbox />
     </div>
   );
+  }
 };
 
-const styles = theme => ({
-  container: {
+const divStyles = {
     margin: "0 auto",
     maxWidth: 960,
-    padding: theme.spacing.unit * 2
-  }
-});
+};
 
-export default withStyles(styles)(App);
+export default App
+

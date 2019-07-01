@@ -6,6 +6,5 @@ from . import views
 
 
 urlpatterns = [
-    #path('', views.index, name='index')
-    path('orgEnts/', views.get_org_ents, name='get_org_ents')
+    path('upload/', views.upload, name='upload')
 ]

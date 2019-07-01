@@ -1,0 +1,15 @@
+body {
+  font-family: Arial, sans-serif;
+}
+.container {
+  padding: 24px;
+}
+.divider {
+  margin-top: 24px;
+}
+.btn-row {
+  margin: 24px;
+  a {
+    margin: 0 6px;
+  }
+}

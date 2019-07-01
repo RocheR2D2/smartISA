@@ -72,9 +72,18 @@ class Upload extends Component {
 
       const formData = new FormData();
       formData.append("file", file, file.name);
+      req.responseType = 'json';
+      req.onreadystatechange = function() {
+    	if (req.readyState === XMLHttpRequest.DONE) {
+           for (var key in req.response["org_ents"]){
+                console.debug("Added entity " + req.response["org_ents"][key]);
+		this.func(req.response["org_ents"][key]);
+      		}
+	}
+      };
       // HERE PUT endpoint django
-      req.open("POST", "http://web:8001/upload");
-      req.send(formData);
+      req.open("POST", "http://localhost:8001/docxs/upload/");
+      req.send(formData); 
     });
   }
 
