@@ -4,7 +4,7 @@ from crawler import crawl
 import logging
 from scrapyd_api import ScrapydAPI
 
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG)
 scrapyd = ScrapydAPI('http://scrapyd:6800')
 
 def crawling(request, research):
@@ -12,7 +12,8 @@ def crawling(request, research):
     task = {"status":"Failed"}
     if list_result:
         try:
-            task = scrapyd.schedule('default', 'quotes', start_urls=list_result, domain="investmentpolicy.unctad.org")
+            logging.debug(list_result)
+            task = scrapyd.schedule('default', 'quotes', start_urls=list_result, allowed_domains=["investmentpolicy.unctad.org"])
             task={'task_id': task, 'status': 'started' }
             logging.info(task)
         except Exception as e:

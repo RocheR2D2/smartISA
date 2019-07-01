@@ -7,18 +7,17 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chkArr: [
-      ],
-      checkedLabel: ''
+      chkArr: {},
     };
-    this.addItems = this.addItems.bind(this)
+    this.addItems = this.addItems.bind(this);
 
   }
   addItems(new_labels) {
     console.debug(new_labels);
     var { chkArr } = this.state;
     for (var key in new_labels){
-    	chkArr.push({new_labels[key]:false});
+	var new_label = new_labels[key];
+    	chkArr[new_label] = true;
     }
     console.debug(JSON.stringify(chkArr, null, 4));
     this.setState({
