@@ -5,7 +5,7 @@ import scrapy
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
     allowed_domains = ["investmentpolicyhub.unctad.org"]
-
+    self.start_urls = ["https://investmentpolicy.unctad.org/investment-dispute-settlement"]
     def parse(self, response):
   
         short_title = response.xpath('//*[@id="case-short-title"]/text()').extract_first()

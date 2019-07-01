@@ -96,7 +96,7 @@ class Upload extends Component {
           <img
             className="CheckIcon"
             alt="done"
-            src="baseline-check_circle_outline-24px.svg"
+            src="baseline-check_circle_outline-24px.png"
             style={{
               opacity:
                 uploadProgress && uploadProgress.state === "done" ? 0.5 : 0
