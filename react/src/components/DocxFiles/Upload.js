@@ -12,7 +12,7 @@ class Upload extends Component {
       uploadProgress: {},
       successfullUploaded: false
     };
-
+    this.addItems = this.addItems.bind(this);
     this.onFilesAdded = this.onFilesAdded.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
     this.sendRequest = this.sendRequest.bind(this);
@@ -24,7 +24,9 @@ class Upload extends Component {
       files: prevState.files.concat(files)
     }));
   }
-
+  addItems(items){
+     	this.props.addItems(items);
+  }
   async uploadFiles() {
     this.setState({ uploadProgress: {}, uploading: true });
     const promises = [];
@@ -73,13 +75,11 @@ class Upload extends Component {
       const formData = new FormData();
       formData.append("file", file, file.name);
       req.responseType = 'json';
+      var bullshit_this = this
       req.onreadystatechange = function() {
     	if (req.readyState === XMLHttpRequest.DONE) {
-           for (var key in req.response["org_ents"]){
-                console.debug("Added entity " + req.response["org_ents"][key]);
-		this.func(req.response["org_ents"][key]);
-      		}
-	}
+		bullshit_this.addItems(req.response["org_ents"]);
+      	}
       };
       // HERE PUT endpoint django
       req.open("POST", "http://localhost:8001/docxs/upload/");

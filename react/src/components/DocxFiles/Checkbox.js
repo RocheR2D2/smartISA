@@ -2,6 +2,50 @@ import React from "react";
 import "./Checkbox.css";
 const { Component } = React;
 
+class Checkbox extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  // handleClick was inlined
+
+  render() {
+    return (
+      <div>
+        <form>
+          {Object.keys(this.props.itemsToDisplay).map((key) => (
+            <div key={key}>
+              <input
+                name={key}
+                id={`checkbox-${key}`}
+                type="checkbox"
+                checked={this.props.itemsToDisplay[key]}
+                onChange={() => this.setState({ [key]: !this.props.itemsToDisplay[key] })}
+              />
+
+              <span className="padding">
+                {/* Don't need a `key` prop here */}
+                <label htmlFor={`checkbox-${key}`}>
+                  {key}
+                </label>
+              </span>
+            </div>
+          ))}
+        </form>
+        <div className="center">
+          <h2>Current State: </h2>
+          <ul>
+            {Object.keys(this.props.itemsToDisplay).map(key => (
+              <li key={key}>{`${key}: ${this.props.itemsToDisplay[key]}`}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
+
+/*
 const Checkbox = (props) => {
   return (
     <span style={{ 'marginLeft': '32px' }}>
@@ -22,50 +66,43 @@ const Checkbox = (props) => {
 class CheckboxWrap extends Component {
   constructor(props) {
     super(props);
-    this.addItem = this.addItem.bind(this)
     this.checkAll = this.checkAll.bind(this)
     this.checkInvert = this.checkInvert.bind(this)
     this.checkNone = this.checkNone.bind(this)
   }
   onInputChange(index) {
-    var { chkArr } = this.state;
+    var { chkArr } = this.props.itemsToDisplay;
     chkArr[index].checked = !chkArr[index].checked;
-    this.setState({
-      chkArr: chkArr
-    })
+    //this.setState({
+    //  chkArr: chkArr
+    //})
   }
-  addItem(new_label) {
-    var { chkArr } = this.state;
-    chkArr.push({ label: new_label, checked:false})
-    this.setState({
-      chkArr: chkArr
-    })
-  }
-
+  
   checkAll(e) {
     e.preventDefault();
 
-    var { chkArr } = this.state;
+    var { chkArr } = this.props.itemsToDisplay;
     var targetArr = chkArr.map((item) => {
       return {
         label: item.label,
         checked: true
       }
     })
-    this.setState({
-      chkArr: targetArr
-    });
+    //this.setState({
+    //  chkArr: targetArr
+    //});
   }
   checkInvert(e) {
     e.preventDefault();
 
-    var { chkArr } = this.state;
+    var { chkArr } = this.props.itemsToDisplay;
     var targetArr = chkArr.map((item) => {
       return {
         label: item.label,
         checked: !item.checked
       }
     })
+	  
     this.setState({
       chkArr: targetArr
     })
@@ -73,21 +110,22 @@ class CheckboxWrap extends Component {
   checkNone(e) {
     e.preventDefault();
 
-    var { chkArr } = this.state;
+    var { chkArr } = this.props.itemsToDisplay;
     var targetArr = chkArr.map((item) => {
       return {
         label: item.label,
         checked: false
       }
     })
+	
     this.setState({
       chkArr: targetArr
     })
+   
   }
   render() {
-    var { chkArr } = this.state;
     var checkArr = []
-    chkArr.map((item) => {
+    {this.props.itemsToDisplay}.map((item) => {
       if (item.checked === true) {
         checkArr.push(item.label)
       }
@@ -142,5 +180,5 @@ class CheckboxWrap extends Component {
     )
   }
 }
-
+*/
 export default Checkbox;

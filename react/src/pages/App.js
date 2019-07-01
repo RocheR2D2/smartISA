@@ -8,16 +8,28 @@ class App extends Component {
     super(props);
     this.state = {
       chkArr: [
-	//{ label: '梨', checked: false },
       ],
       checkedLabel: ''
     };
+    this.addItems = this.addItems.bind(this)
+
+  }
+  addItems(new_labels) {
+    console.debug(new_labels);
+    var { chkArr } = this.state;
+    for (var key in new_labels){
+    	chkArr.push({new_labels[key]:false});
+    }
+    console.debug(JSON.stringify(chkArr, null, 4));
+    this.setState({
+      chkArr: chkArr
+    })
   }
   render() {
   return (
     <div style={divStyles}>
-      <Upload />
-      <Checkbox />
+      <Upload addItems={this.addItems} />
+      <Checkbox itemsToDisplay={this.state.chkArr} />
     </div>
   );
   }
