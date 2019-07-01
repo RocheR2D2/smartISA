@@ -1,9 +1,10 @@
+**/__pycache__
 **/crawler/dbs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.docx
 # C extensions
 *.so
 

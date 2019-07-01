@@ -6,37 +6,34 @@ import spacy
 from spacy.tokens import Span
 import json
 from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+from django.views.decorators.csrf import csrf_exempt
+import logging
 
 nlp = spacy.load('en_core_web_sm')
 
 # Create your views here.
-def getText(request):
-    
-
-    doc = Document("static/Smart_ISA_01.docx")
+def _get_text(filepath):
+    doc = Document(filepath)
     fullText = []
     for para in doc.paragraphs:
         fullText.append(para.text)
     doc = '\n'.join(fullText)
-    #return HttpResponse(json.dump(text), content_type='application/json')
-    #return JsonResponse({'text':doc})
+    doc= nlp(doc)
     return doc
 
 # Display basic entity info:
-def show_ents(request):
-    
-    doc = nlp(getText(request))
+def _show_ents(doc):
     fullText = {}
     i=0
     if doc.ents:
         for ent in doc.ents:
             fullText[i] = ent.text+' - '+ent.label_+' - '+str(spacy.explain(ent.label_))
             i += 1
-    return JsonResponse({'fulltext':fullText})
+    return fullText
 
 # Get a dictonary filled of org ents from the word doc without duplicate value
-def get_org_ents(request):
-    doc = nlp(getText(request))
+def _get_org_ents(doc):
     org_ents = {}
     i=0
     if doc.ents:
@@ -49,7 +46,7 @@ def get_org_ents(request):
             #[e for e in doc.ents if not e.text.isspace()]
             #print(ent.text+' - '+ent.label_+' - '+str(spacy.explain(ent.label_)))
     #return org_ents 
-    return JsonResponse({'org_ents':org_ents})
+    return org_ents
 
 def addORGSpan(doc):
 	ORG = doc.vocab.strings[u'ORG']  
@@ -59,3 +56,20 @@ def addORGSpan(doc):
 
 	# Add the entity to the existing Doc object
 	doc.ents = list(doc.ents) + [new_ent]
+
+@csrf_exempt
+def upload(request):
+    if request.method == 'POST' or request.method == 'OPTIONS':
+        myfile = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        filepath= fs.path(filename)
+        logging.info(f"Saved {filepath}")
+    else:
+        #default value for test
+        filepath="static/Smart_ISA_01.docx"
+        logging.info(f"Use default file {filepath}")
+    nlp_text = _get_text(filepath)
+    #ents = _show_ents(nlp_text)
+    org_ents = _get_org_ents(nlp_text)
+    return JsonResponse({'text': [token.text for token in  nlp_text], "org_ents": org_ents})
